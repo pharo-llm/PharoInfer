@@ -52,7 +52,7 @@ AIChatCompletionRequest >> options [
 ]
 
 { #category : 'accessing' }
-AIChatCompletionRequest >> ptions: anObject [
+AIChatCompletionRequest >> options: anObject [
 	options := anObject
 ]
 
