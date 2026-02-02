@@ -93,6 +93,7 @@ AITokenizer >> initialize [
 
 	super initialize.
 	vocabulary := self initializeVocabulary.
+	self buildReverseVocabulary.
 	self updateSpecialTokens
 ]
 
@@ -186,6 +187,9 @@ AITokenizer >> padToken: anObject [
 { #category : 'accessing' }
 AITokenizer >> reverseVocabulary [
 
+reverseVocabulary ifNil: [
+		vocabulary ifNil: [ ^ Dictionary new ].
+		self buildReverseVocabulary ].
 	^ reverseVocabulary
 ]
 
