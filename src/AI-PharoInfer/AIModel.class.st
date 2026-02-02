@@ -20,12 +20,15 @@ Class {
 { #category : 'instance creation' }
 AIModel class >> fromFile: aFileReference [
 
+	| fileReference |
+	fileReference := aFileReference asFileReference.
+	
 	"Create a model from a file"
 	^ self new
-		path: aFileReference;
-		name: aFileReference basenameWithoutExtension;
-		format: (AIModelFormat detectFromFile: aFileReference);
-		size: aFileReference size;
+		path: fileReference;
+		name: fileReference basenameWithoutExtension;
+		format: (AIModelFormat detectFromFile: fileReference);
+		size: fileReference size;
 		yourself
 ]
 

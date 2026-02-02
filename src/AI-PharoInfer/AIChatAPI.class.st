@@ -19,7 +19,7 @@ AIChatAPI class >> default [
 
 { #category : 'accessing' }
 AIChatAPI class >> reset [
-
+	<script>
 	default := nil
 ]
 
