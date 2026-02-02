@@ -95,39 +95,38 @@ AIGGUFParser >> parseMetadata [
 
 	metadata := Dictionary new.
 	metadataCount timesRepeat: [
-		| key valueType value |
+			| key valueType value |
+			"Read key"
+			key := self readKeyString. "Read value type (uint32)"
+			valueType := self readUInt32. "Read value based on type"
+			value := self readValue: valueType.
 
-		"Read key"
-		key := self readString.
-
-		"Read value type (uint32)"
-		valueType := self readUInt32.
-
-		"Read value based on type"
-		value := self readValue: valueType.
-
-		metadata at: key put: value ].
+			metadata at: key put: value ]
 ]
 
 { #category : 'as yet unclassified' }
 AIGGUFParser >> readArray [
 	"Read an array value"
+
 	| arrayType arrayLength values |
-
 	"Read array value type (uint32)"
-	arrayType := self readUInt32.
-
-	"Read array length (uint64)"
+	arrayType := self readUInt32. "Read array length (uint64)"
 	arrayLength := self readUInt64.
-	(arrayLength > self remainingBytes) ifTrue: [
-		Error signal: 'Invalid GGUF array length: ', arrayLength asString ].
-
-	"Read array values"
-	values := OrderedCollection new: arrayLength.
-	arrayLength timesRepeat: [
-		values add: (self readValue: arrayType) ].
+	arrayLength > self remainingBytes ifTrue: [ Error signal: 'Invalid GGUF array length: ' , arrayLength asString ]. "Read array values"
+	values := OrderedCollection new: (self readArrayLength: arrayLength).
+	arrayLength timesRepeat: [ values add: (self readValue: arrayType) ].
 
 	^ values asArray
+]
+
+{ #category : 'as yet unclassified' }
+AIGGUFParser >> readArrayLength: arrayLength [
+	"Validate the array length can be allocated"
+
+	arrayLength > SmallInteger maxVal ifTrue: [
+		Error signal: 'GGUF array too large: ', arrayLength asString ].
+
+	^ arrayLength asInteger
 ]
 
 { #category : 'as yet unclassified' }
@@ -220,6 +219,24 @@ AIGGUFParser >> readInt8 [
 ]
 
 { #category : 'as yet unclassified' }
+AIGGUFParser >> readKeyString [
+
+	"Read a metadata key string (uint32 length + UTF-8 bytes)"
+	| length bytes |
+
+	"Read string length (uint32)"
+	length := self readUInt32.
+
+	(length > self remainingBytes) ifTrue: [
+		Error signal: 'Invalid GGUF key length: ', length asString ].
+
+	bytes := stream next: length.
+
+	"Convert UTF-8 bytes to string"
+	^ bytes utf8Decoded
+]
+
+{ #category : 'as yet unclassified' }
 AIGGUFParser >> readString [
 
 	"Read a string value (uint64 length + UTF-8 bytes)"
@@ -231,9 +248,9 @@ AIGGUFParser >> readString [
 	(length > self remainingBytes) ifTrue: [
 		Error signal: 'Invalid GGUF string length: ', length asString ].
 
+	bytes := stream next: length.
 
 bytes := stream next: length.
-
 	"Convert UTF-8 bytes to string"
 	^ bytes utf8Decoded
 ]
