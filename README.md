@@ -69,15 +69,3 @@ request := AIChatCompletionRequest
     AIChatMessage user: 'What is Smalltalk?' }.
 AIChatAPI default complete: request.
 ```
-
-## Documentation
-
-- Full documentation and examples live in [`docs/index.md`](docs/index.md).
-
-## Contributing
-
-Issues and pull requests are welcome! Please open a ticket or PR with details about the change you want to make.
-
-## License
-
-MIT License. See [LICENSE](LICENSE).
