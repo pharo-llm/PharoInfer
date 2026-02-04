@@ -4,8 +4,9 @@ Class {
 	#instVars : [
 		'config'
 	],
-	#category : 'AI-PharoInfer-Tests',
-	#package : 'AI-PharoInfer-Tests'
+	#category : 'AI-PharoInfer-Tests-Tests',
+	#package : 'AI-PharoInfer-Tests',
+	#tag : 'Tests'
 }
 
 { #category : 'running' }

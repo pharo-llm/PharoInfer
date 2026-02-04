@@ -4,8 +4,9 @@ Class {
 	#instVars : [
 		'tokenizer'
 	],
-	#category : 'AI-PharoInfer-Tests',
-	#package : 'AI-PharoInfer-Tests'
+	#category : 'AI-PharoInfer-Tests-Mock',
+	#package : 'AI-PharoInfer-Tests',
+	#tag : 'Mock'
 }
 
 { #category : 'private' }

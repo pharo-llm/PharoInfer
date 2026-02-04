@@ -191,26 +191,30 @@ AILocalBackend >> loadModelData: aModel [
 
 { #category : 'private' }
 AILocalBackend >> performInference: tokens model: aModel options: options [
+    | modelData generated result currentTokens |
 
-	"Perform inference to generate text (simplified implementation)"
-	| modelData generated result tokens |
+    modelData := loadedModels at: aModel name.
+    generated := OrderedCollection new.
 
-	modelData := loadedModels at: aModel name.
+    currentTokens := tokens.  "copy argument into temp"
 
-	"Generate tokens (simplified - in reality this would use the model's forward pass)"
-	generated := OrderedCollection new.
+    options maxTokens timesRepeat: [
+        | nextToken |
+        nextToken := self
+            predictNextToken: currentTokens
+            model: aModel
+            options: options.
 
-	options maxTokens timesRepeat: [
-		| nextToken |
-		nextToken := self predictNextToken: tokens model: aModel options: options.
+        (self isEndToken: nextToken)
+            ifTrue: [ ^ self tokenizer decode: generated ].
 
-		(self isEndToken: nextToken) ifTrue: [ ^ self tokenizer decode: generated ].
+        generated add: nextToken.
+        currentTokens := currentTokens copyWith: nextToken
+    ].
 
-		generated add: nextToken.
-		tokens := tokens copyWith: nextToken ].
+    result := self tokenizer decode: generated.
+    ^ result
 
-	result := self tokenizer decode: generated.
-	^ result
 ]
 
 { #category : 'private' }
